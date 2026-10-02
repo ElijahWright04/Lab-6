@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Native Plant App - Search</title>
+    <title>Native Plant App - Search & Filter</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,41 +25,59 @@
 
     <main>
         <section>
-            <h2>Search & Filter Native Plants</h2>
-            <p>Explore our database of 15 regional species by name, sunlight, or bloom season.</p>
+            <h2>Plant Directory & Advanced Filters</h2>
+            <p>Sort alphabetically or filter plants by sunlight, bloom season, and height.</p>
 
+            <!-- Statistics Box powered by reduce() -->
+            <div id="stats-container" style="background: #eef4ed; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #2d5a27;">
+                <!-- JavaScript populates summary metrics here -->
+            </div>
+
+            <!-- Interactive Control Bar -->
             <div style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                
+                <!-- Alphabetical Sort Button -->
                 <div>
-                    <label for="keyword" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Search Keyword:</label>
-                    <input type="text" id="keyword" placeholder="Enter plant name..." style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <button id="sort-alpha-btn" style="padding: 0.6rem 1rem; background-color: #2d5a27; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Sort Alphabetically (A-Z)</button>
                 </div>
+
+                <!-- Sunlight Filter -->
                 <div>
-                    <label for="sun" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Sunlight:</label>
-                    <select id="sun" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <label for="sun-filter" style="display: block; margin-bottom: 0.3rem; font-weight: bold;">Sunlight:</label>
+                    <select id="sun-filter" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         <option value="all">All Sunlight Types</option>
                         <option value="Full Sun">Full Sun</option>
                         <option value="Part Shade">Part Shade</option>
                         <option value="Shade">Shade</option>
                     </select>
                 </div>
+
+                <!-- Bloom Season Filter -->
                 <div>
-                    <label for="bloom" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Bloom Season:</label>
-                    <select id="bloom" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <label for="bloom-filter" style="display: block; margin-bottom: 0.3rem; font-weight: bold;">Bloom Season:</label>
+                    <select id="bloom-filter" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         <option value="all">All Seasons</option>
                         <option value="Spring">Spring</option>
                         <option value="Summer">Summer</option>
                         <option value="Fall">Fall</option>
                     </select>
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button id="filter-btn" style="padding: 0.5rem 1rem; background-color: #2d5a27; color: white; border: none; border-radius: 4px; cursor: pointer;">Filter</button>
-                    <button id="clear-btn" style="padding: 0.5rem 1rem; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear</button>
+
+                <!-- Height Filter -->
+                <div>
+                    <label for="height-filter" style="display: block; margin-bottom: 0.3rem; font-weight: bold;">Plant Height:</label>
+                    <select id="height-filter" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="all">All Heights</option>
+                        <option value="short">Short (&lt; 3 ft)</option>
+                        <option value="tall">Tall (&ge; 3 ft)</option>
+                    </select>
                 </div>
+
             </div>
 
             <!-- Dynamic Plant Cards Grid -->
             <div class="plant-grid">
-                <!-- JavaScript will dynamically insert plant cards or no-results message here -->
+                <!-- JavaScript populates plant cards here -->
             </div>
         </section>
     </main>
