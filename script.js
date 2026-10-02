@@ -19,21 +19,22 @@ const nativePlants = [
 
 document.addEventListener("DOMContentLoaded", () => {
     const gridContainer = document.querySelector(".plant-grid");
+    const searchInput = document.getElementById("keyword");
     const sortAlphabeticalBtn = document.getElementById("sort-alpha-btn");
     const sunFilterSelect = document.getElementById("sun-filter");
     const bloomFilterSelect = document.getElementById("bloom-filter");
     const heightFilterSelect = document.getElementById("height-filter");
-    const statsContainer = document.getElementById("stats-container"); // Optional container for reduce() output
+    const statsContainer = document.getElementById("stats-container");
 
-    // DEMO OF map(): Transform plant objects into an array of formatted uppercase names
+    // DEMO OF map()
     const plantNamesUppercase = nativePlants.map(plant => plant.name.toUpperCase());
     console.log("Mapped Plant Names (map):", plantNamesUppercase);
 
-    // DEMO OF find(): Find a specific plant by name
+    // DEMO OF find()
     const featuredPlant = nativePlants.find(plant => plant.name === "Purple Coneflower");
     console.log("Found Plant (find):", featuredPlant);
 
-    // DEMO OF reduce(): Calculate average plant height across the entire collection
+    // DEMO OF reduce()
     const averageHeight = nativePlants.reduce((total, plant, index, array) => {
         total += plant.heightFeet;
         if (index === array.length - 1) {
@@ -41,13 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return total;
     }, 0);
-    console.log("Average Height (reduce):", averageHeight + " feet");
 
     if (statsContainer) {
         statsContainer.innerHTML = `<p><b>Dataset Stats (reduce):</b> Total Plants: ${nativePlants.length} | Average Height: ${averageHeight} ft</p>`;
     }
 
-    // Function to render plants to the DOM
     function renderPlants(plantsToDisplay) {
         if (!gridContainer) return;
         gridContainer.innerHTML = "";
@@ -73,20 +72,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 1. Alphabetical Sorting using sort()
+    // Alphabetical Sorting using sort()
     function sortAlphabetically() {
-        // Create a shallow copy using spread operator to avoid mutating original array
         const sorted = [...nativePlants].sort((a, b) => a.name.localeCompare(b.name));
         renderPlants(sorted);
     }
 
-    // 2, 3, 4. Filtering using filter()
+    // Comprehensive filtering using filter() and search input
     function applyFilters() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
         const selectedSun = sunFilterSelect ? sunFilterSelect.value : "all";
         const selectedBloom = bloomFilterSelect ? bloomFilterSelect.value : "all";
         const selectedHeight = heightFilterSelect ? heightFilterSelect.value : "all";
 
         const filtered = nativePlants.filter(plant => {
+            const matchesSearch = plant.name.toLowerCase().includes(searchTerm) || 
+                                  plant.scientificName.toLowerCase().includes(searchTerm);
             const matchesSun = selectedSun === "all" || plant.sunlight.toLowerCase().includes(selectedSun.toLowerCase());
             const matchesBloom = selectedBloom === "all" || plant.bloomSeason.toLowerCase().includes(selectedBloom.toLowerCase());
             
@@ -94,15 +95,18 @@ document.addEventListener("DOMContentLoaded", () => {
             if (selectedHeight === "short") matchesHeight = plant.heightFeet < 3;
             if (selectedHeight === "tall") matchesHeight = plant.heightFeet >= 3;
 
-            return matchesSun && matchesBloom && matchesHeight;
+            return matchesSearch && matchesSun && matchesBloom && matchesHeight;
         });
 
         renderPlants(filtered);
     }
 
-    // Event Listeners for buttons and filters
+    // Event Listeners
     if (sortAlphabeticalBtn) {
         sortAlphabeticalBtn.addEventListener("click", sortAlphabetically);
+    }
+    if (searchInput) {
+        searchInput.addEventListener("input", applyFilters);
     }
     if (sunFilterSelect) {
         sunFilterSelect.addEventListener("change", applyFilters);
