@@ -1,4 +1,4 @@
-// 1. Plant Data Collection (JSON-style array of objects)
+// 1. Plant Data Collection (20 Native Plant Records)
 const nativePlants = [
     { name: "Purple Coneflower", scientificName: "Echinacea purpurea", sunlight: "Full Sun", soil: "Well-Drained", heightFeet: 2.5, bloomSeason: "Summer", wildlifeBenefits: "Attracts native birds, bees, and butterflies." },
     { name: "Butterfly Weed", scientificName: "Asclepias tuberosa", sunlight: "Full Sun", soil: "Dry to Medium", heightFeet: 2.0, bloomSeason: "Summer", wildlifeBenefits: "Essential host plant for monarch caterpillars." },
@@ -14,7 +14,12 @@ const nativePlants = [
     { name: "Great Blue Lobelia", scientificName: "Lobelia siphilitica", sunlight: "Full Sun to Part Shade", soil: "Moist", heightFeet: 2.5, bloomSeason: "Summer", wildlifeBenefits: "Visited frequently by bumblebees and pollinators." },
     { name: "Foxglove Beardtongue", scientificName: "Penstemon digitalis", sunlight: "Full Sun to Part Shade", soil: "Medium to Well-Drained", heightFeet: 2.5, bloomSeason: "Spring", wildlifeBenefits: "Provides heavy nectar for native bees." },
     { name: "Goldenrod", scientificName: "Solidago altissima", sunlight: "Full Sun", soil: "Adaptable", heightFeet: 4.5, bloomSeason: "Fall", wildlifeBenefits: "Essential fall food source for over 100 insect species." },
-    { name: "Wild Columbine", scientificName: "Aquilegia canadensis", sunlight: "Part Shade to Shade", soil: "Rocky, Well-Drained", heightFeet: 1.5, bloomSeason: "Spring", wildlifeBenefits: "Adapted specifically for hummingbird pollination." }
+    { name: "Wild Columbine", scientificName: "Aquilegia canadensis", sunlight: "Part Shade to Shade", soil: "Rocky, Well-Drained", heightFeet: 1.5, bloomSeason: "Spring", wildlifeBenefits: "Adapted specifically for hummingbird pollination." },
+    { name: "Wild Ginger", scientificName: "Asarum canadense", sunlight: "Shade", soil: "Rich, Moist", heightFeet: 0.5, bloomSeason: "Spring", wildlifeBenefits: "Provides ground-level shelter for small woodland insects." },
+    { name: "Blue Vervain", scientificName: "Verbena hastata", sunlight: "Full Sun", soil: "Wet to Moist", heightFeet: 3.5, bloomSeason: "Summer", wildlifeBenefits: "Attracts native bees, wasps, and beneficial predatory insects." },
+    { name: "Culver's Root", scientificName: "Veronicastrum virginicum", sunlight: "Full Sun to Part Shade", soil: "Moist", heightFeet: 4.0, bloomSeason: "Summer", wildlifeBenefits: "Outstanding vertical nectar source for honeybees and butterflies." },
+    { name: "Wild Golden Glow", scientificName: "Rudbeckia laciniata", sunlight: "Full Sun to Part Shade", soil: "Moist", heightFeet: 5.0, bloomSeason: "Late Summer", wildlifeBenefits: "Provides heavy seed loads for birds and shelter for wildlife." },
+    { name: "Swamp Milkweed", scientificName: "Asclepias incarnata", sunlight: "Full Sun", soil: "Moist to Wet", heightFeet: 4.0, bloomSeason: "Summer", wildlifeBenefits: "Vital caterpillar host and nectar plant for monarch butterflies." }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,25 +31,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const heightFilterSelect = document.getElementById("height-filter");
     const statsContainer = document.getElementById("stats-container");
 
-    // DEMO OF map()
-    const plantNamesUppercase = nativePlants.map(plant => plant.name.toUpperCase());
-    console.log("Mapped Plant Names (map):", plantNamesUppercase);
+    // 2. Statistical Calculations Dashboard (`reduce` and array operations)
+    function renderAnalytics() {
+        if (!statsContainer) return;
 
-    // DEMO OF find()
-    const featuredPlant = nativePlants.find(plant => plant.name === "Purple Coneflower");
-    console.log("Found Plant (find):", featuredPlant);
+        const totalPlants = nativePlants.length;
+        const totalHeight = nativePlants.reduce((sum, plant) => sum + plant.heightFeet, 0);
+        const averageHeight = (totalHeight / totalPlants).toFixed(1);
 
-    // DEMO OF reduce()
-    const averageHeight = nativePlants.reduce((total, plant, index, array) => {
-        total += plant.heightFeet;
-        if (index === array.length - 1) {
-            return (total / array.length).toFixed(1);
-        }
-        return total;
-    }, 0);
+        // Tallest and Shortest plant calculations
+        const tallestPlant = nativePlants.reduce((max, plant) => plant.heightFeet > max.heightFeet ? plant : max, nativePlants[0]);
+        const shortestPlant = nativePlants.reduce((min, plant) => plant.heightFeet < min.heightFeet ? plant : min, nativePlants[0]);
 
-    if (statsContainer) {
-        statsContainer.innerHTML = `<p><b>Dataset Stats (reduce):</b> Total Plants: ${nativePlants.length} | Average Height: ${averageHeight} ft</p>`;
+        // Count by Bloom Season
+        const bloomCounts = nativePlants.reduce((acc, plant) => {
+            acc[plant.bloomSeason] = (acc[plant.bloomSeason] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Count by Sunlight Requirement
+        const sunCounts = nativePlants.reduce((acc, plant) => {
+            acc[plant.sunlight] = (acc[plant.sunlight] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Format breakdown strings
+        const bloomText = Object.entries(bloomCounts).map(([season, count]) => `${season}: ${count}`).join(" | ");
+        const sunText = Object.entries(sunCounts).map(([sun, count]) => `${sun}: ${count}`).join(" | ");
+
+        statsContainer.innerHTML = `
+            <h3 style="margin-top: 0; color: #2d5a27;">📊 Native Plant Database Analytics</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                <p><b>Total Plants:</b> ${totalPlants}</p>
+                <p><b>Average Height:</b> ${averageHeight} ft</p>
+                <p><b>Tallest:</b> ${tallestPlant.name} (${tallestPlant.heightFeet} ft)</p>
+                <p><b>Shortest:</b> ${shortestPlant.name} (${shortestPlant.heightFeet} ft)</p>
+            </div>
+            <div style="margin-top: 0.8rem; border-top: 1px solid #c8d8c3; padding-top: 0.5rem; font-size: 0.95rem;">
+                <p><b>Bloom Breakdown:</b> ${bloomText}</p>
+                <p><b>Sunlight Breakdown:</b> ${sunText}</p>
+            </div>
+        `;
     }
 
     function renderPlants(plantsToDisplay) {
@@ -78,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderPlants(sorted);
     }
 
-    // Comprehensive filtering using filter() and search input
+    // Comprehensive filtering
     function applyFilters() {
         const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
         const selectedSun = sunFilterSelect ? sunFilterSelect.value : "all";
@@ -102,22 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Event Listeners
-    if (sortAlphabeticalBtn) {
-        sortAlphabeticalBtn.addEventListener("click", sortAlphabetically);
-    }
-    if (searchInput) {
-        searchInput.addEventListener("input", applyFilters);
-    }
-    if (sunFilterSelect) {
-        sunFilterSelect.addEventListener("change", applyFilters);
-    }
-    if (bloomFilterSelect) {
-        bloomFilterSelect.addEventListener("change", applyFilters);
-    }
-    if (heightFilterSelect) {
-        heightFilterSelect.addEventListener("change", applyFilters);
-    }
+    if (sortAlphabeticalBtn) sortAlphabeticalBtn.addEventListener("click", sortAlphabetically);
+    if (searchInput) searchInput.addEventListener("input", applyFilters);
+    if (sunFilterSelect) sunFilterSelect.addEventListener("change", applyFilters);
+    if (bloomFilterSelect) bloomFilterSelect.addEventListener("change", applyFilters);
+    if (heightFilterSelect) heightFilterSelect.addEventListener("change", applyFilters);
 
-    // Initial render
+    // Initial renders
+    renderAnalytics();
     renderPlants(nativePlants);
 });
